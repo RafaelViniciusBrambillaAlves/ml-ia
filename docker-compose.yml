@@ -1,0 +1,22 @@
+services:
+  jupyter:
+    image: jupyter/pyspark-notebook:latest
+    container_name: pyspark_jupyter
+    ports:
+      - "8888:8888"
+      - "4040:4040"
+    volumes:
+      - ./notebooks:/home/jovyan/work/notebooks
+      - ./data:/home/jovyan/work/data
+      - ./requirements.txt:/home/jovyan/work/requirements.txt
+      - ./.kaggle:/home/jovyan/.kaggle
+    environment:
+      - JUPYTER_TOKEN=secret
+      - KAGGLE_CONFIG_DIR=/home/jovyan/.kaggle
+    working_dir: /home/jovyan/work
+    command: >
+      bash -c "
+      pip install --user -r requirements.txt &&
+      export PATH=$$PATH:/home/jovyan/.local/bin &&
+      start-notebook.sh --NotebookApp.notebook_dir=/home/jovyan/work
+      "
